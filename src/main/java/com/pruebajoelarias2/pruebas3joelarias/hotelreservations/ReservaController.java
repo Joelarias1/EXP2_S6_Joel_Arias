@@ -2,7 +2,10 @@ package com.pruebajoelarias2.pruebas3joelarias.hotelreservations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +40,29 @@ public class ReservaController {
         reservas.add(new Reserva(1L, "Joel Arias", hab2));
         reservas.add(new Reserva(2L, "Juan Arias", hab3));
 
+    }
+
+    // Método GET para obtener todas las reservas
+    @GetMapping
+    public List<Reserva> getAllReservas() {
+        return reservas;
+    }
+
+    // Método GET para obtener una reserva por ID
+    @GetMapping("/{id}")
+    public Reserva getReservaById(@PathVariable Long id) {
+        return reservas.stream()
+                .filter(reserva -> reserva.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    // Método GET para obtener habitaciones disponibles
+    @GetMapping("/disponibles")
+    public List<Habitacion> getHabitacionesDisponibles() {
+        return habitaciones.stream()
+                .filter(Habitacion::isDisponible)
+                .collect(Collectors.toList());
     }
 
 
