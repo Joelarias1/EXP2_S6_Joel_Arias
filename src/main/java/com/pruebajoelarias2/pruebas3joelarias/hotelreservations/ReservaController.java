@@ -2,7 +2,6 @@ package com.pruebajoelarias2.pruebas3joelarias.hotelreservations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +25,9 @@ public class ReservaController {
         Hotel hotel3 = new Hotel(3L, "Hotel Providencia", "Avenida 200, Ciudad B", 4);
 
         // Crear habitaciones
-        Habitacion hab1 = new Habitacion(1L, "Suite", 300.0, true, hotel1);
-        Habitacion hab2 = new Habitacion(2L, "Doble", 150.0, false, hotel2);
-        Habitacion hab3 = new Habitacion(3L, "Simple", 100.0, true, hotel3);
+        Habitacion hab1 = new Habitacion(1L, "Suite", 59000, true, hotel1);
+        Habitacion hab2 = new Habitacion(2L, "Doble", 42000, false, hotel2);
+        Habitacion hab3 = new Habitacion(3L, "Simple", 36000, true, hotel3);
 
 
         habitaciones.add(hab1);
@@ -60,10 +59,15 @@ public class ReservaController {
     // Método GET para obtener habitaciones disponibles
     @GetMapping("/disponibles")
     public List<Habitacion> getHabitacionesDisponibles() {
-        return habitaciones.stream()
-                .filter(Habitacion::isDisponible)
-                .collect(Collectors.toList());
+        List<Habitacion> disponibles = new ArrayList<>();
+        for (Habitacion habitacion : habitaciones) {
+            if (habitacion.isDisponible()) {
+                disponibles.add(habitacion);
+            }
+        }
+        return disponibles;
     }
+
 
 
 }
