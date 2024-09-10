@@ -1,11 +1,15 @@
 package com.pruebajoelarias2.pruebas3joelarias.hotelreservations.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.model.Reserva;
+import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.dto.ReservaDTO;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.repository.ReservaRepository;
 
 @Service
@@ -15,22 +19,29 @@ public class ReservaServiceImpl implements ReservaService {
     private ReservaRepository reservaRepository;
 
     @Override
-    public List<Reserva> getAllReservas() {
-        return reservaRepository.findAll();
+    public List<ReservaDTO> getAllReservas() {
+        List<ReservaDTO> reservas = reservaRepository.findAll()
+            .stream()
+            .map(reserva -> new ReservaDTO(
+                reserva.getId(),
+                reserva.getNombreCliente(),
+                reserva.getHabitacion().getId()
+            ))
+            .collect(Collectors.toList());
+    
+        System.out.println("Reservas encontradas: " + reservas.size()); // Log para verificar cantidad de reservas
+        return reservas;
     }
+    
 
     @Override
-    public Optional<Reserva> getReservaById(Long id) {
-        return reservaRepository.findById(id);
+    public Optional<ReservaDTO> getReservaById(Long id) {
+        return reservaRepository.findById(id)
+            .map(reserva -> new ReservaDTO(
+                reserva.getId(),
+                reserva.getNombreCliente(),
+                reserva.getHabitacion().getId() 
+            ));
     }
 
-    @Override
-    public Reserva saveReserva(Reserva reserva) {
-        return reservaRepository.save(reserva);
-    }
-
-    @Override
-    public void deleteReserva(Long id) {
-        reservaRepository.deleteById(id);
-    }
 }

@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservaDTO {
-
     private Long id;
 
     @NotNull(message = "El nombre del cliente es obligatorio")
@@ -20,5 +19,5 @@ public class ReservaDTO {
     private String nombreCliente;
 
     @NotNull(message = "La habitación es obligatoria")
-    private HabitacionDTO habitacion;
+    private Long habitacionId; 
 }
