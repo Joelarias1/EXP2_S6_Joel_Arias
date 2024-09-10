@@ -18,5 +18,8 @@ import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.service.ReservaS
 @RequestMapping("/api/reservas")
 public class ReservaController {
 
+    @Autowired
+    private ReservaService reservaService; 
+
 
 }
