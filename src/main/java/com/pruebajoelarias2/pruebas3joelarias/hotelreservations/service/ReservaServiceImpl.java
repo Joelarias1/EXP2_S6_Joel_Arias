@@ -15,6 +15,8 @@ import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.model.Reserva;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.repository.HabitacionRepository;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.repository.ReservaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class ReservaServiceImpl implements ReservaService {
 
@@ -24,29 +26,34 @@ public class ReservaServiceImpl implements ReservaService {
     @Autowired
     private HabitacionRepository habitacionRepository;
 
-    // GET ALL RESERVAS
+    //GET ALL RESERVAS
     @Override
     public List<ReservaDTO> getAllReservas() {
         List<ReservaDTO> reservas = reservaRepository.findAll()
-                .stream()
-                .map(reserva -> new ReservaDTO(
-                        reserva.getId(),
-                        reserva.getNombreCliente(),
-                        reserva.getHabitacion().getId()))
-                .collect(Collectors.toList());
+            .stream()
+            .map(reserva -> new ReservaDTO(
+                reserva.getId(),
+                reserva.getNombreCliente(),
+                reserva.getHabitacion().getId()))
+            .collect(Collectors.toList());
+        
+        if (reservas.isEmpty()) {
+            throw new EntityNotFoundException("No se encontraron reservas.");
+        }
+        
         return reservas;
     }
-
-    // GET BY ID
+    
+    //GET BY ID RESERVA
     @Override
     public Optional<ReservaDTO> getReservaById(Long id) {
         return reservaRepository.findById(id)
-                .map(reserva -> new ReservaDTO(
-                        reserva.getId(),
-                        reserva.getNombreCliente(),
-                        reserva.getHabitacion().getId()));
+            .map(reserva -> new ReservaDTO(
+                reserva.getId(),
+                reserva.getNombreCliente(),
+                reserva.getHabitacion().getId()));
     }
-
+    
     // POST
     @Override
     public ReservaDTO saveReserva(ReservaDTO reservaDTO) {
@@ -79,51 +86,50 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public void deleteReserva(Long id) {
         if (!reservaRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada");
+            throw new EntityNotFoundException("Reserva no encontrada");
         }
         reservaRepository.deleteById(id);
     }
 
     // PUT
-
     @Override
     public ReservaDTO updateReserva(Long id, ReservaDTO reservaDTO) {
         // Buscar la reserva existente
         Reserva reservaExistente = reservaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada"));
-
-        // Actualizar los datos de la reserva
+    
+        // Actualizar los datos de la reserva (nombre del cliente)
         reservaExistente.setNombreCliente(reservaDTO.getNombreCliente());
-
-        // Verificar si la nueva habitación es diferente y está disponible
+    
+        // Verificar si la nueva habitación es diferente
         Habitacion nuevaHabitacion = habitacionRepository.findById(reservaDTO.getHabitacionId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Habitación no encontrada"));
-
-        if (!nuevaHabitacion.isDisponible()
-                && !nuevaHabitacion.getId().equals(reservaExistente.getHabitacion().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La habitación no está disponible.");
+    
+        if (!nuevaHabitacion.isDisponible() && !nuevaHabitacion.getId().equals(reservaExistente.getHabitacion().getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La nueva habitación no está disponible.");
         }
-
+    
         // Cambiar la habitación si es necesario
         if (!reservaExistente.getHabitacion().getId().equals(nuevaHabitacion.getId())) {
-            // Poner la habitación antigua como disponible
+            // Marcar la habitación anterior como disponible
             Habitacion habitacionAnterior = reservaExistente.getHabitacion();
             habitacionAnterior.setDisponible(true);
             habitacionRepository.save(habitacionAnterior);
-
-            // Actualizar a la nueva habitación
+    
+            // Actualizar la reserva con la nueva habitación
             reservaExistente.setHabitacion(nuevaHabitacion);
             nuevaHabitacion.setDisponible(false); // Marcar la nueva habitación como no disponible
         }
-
+    
         // Guardar la reserva actualizada
-        reservaRepository.save(reservaExistente);
-
+        Reserva reservaActualizada = reservaRepository.save(reservaExistente);
+    
         // Retornar la reserva actualizada como DTO
         return new ReservaDTO(
-                reservaExistente.getId(),
-                reservaExistente.getNombreCliente(),
-                reservaExistente.getHabitacion().getId());
+                reservaActualizada.getId(),
+                reservaActualizada.getNombreCliente(),
+                reservaActualizada.getHabitacion().getId());
     }
+    
 
 }
