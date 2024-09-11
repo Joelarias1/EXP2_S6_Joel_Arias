@@ -11,11 +11,13 @@ import jakarta.persistence.Table;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "RESERVA")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
