@@ -86,4 +86,44 @@ public class ReservaServiceImpl implements ReservaService {
 
     // PUT
 
+    @Override
+    public ReservaDTO updateReserva(Long id, ReservaDTO reservaDTO) {
+        // Buscar la reserva existente
+        Reserva reservaExistente = reservaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada"));
+
+        // Actualizar los datos de la reserva
+        reservaExistente.setNombreCliente(reservaDTO.getNombreCliente());
+
+        // Verificar si la nueva habitación es diferente y está disponible
+        Habitacion nuevaHabitacion = habitacionRepository.findById(reservaDTO.getHabitacionId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Habitación no encontrada"));
+
+        if (!nuevaHabitacion.isDisponible()
+                && !nuevaHabitacion.getId().equals(reservaExistente.getHabitacion().getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La habitación no está disponible.");
+        }
+
+        // Cambiar la habitación si es necesario
+        if (!reservaExistente.getHabitacion().getId().equals(nuevaHabitacion.getId())) {
+            // Poner la habitación antigua como disponible
+            Habitacion habitacionAnterior = reservaExistente.getHabitacion();
+            habitacionAnterior.setDisponible(true);
+            habitacionRepository.save(habitacionAnterior);
+
+            // Actualizar a la nueva habitación
+            reservaExistente.setHabitacion(nuevaHabitacion);
+            nuevaHabitacion.setDisponible(false); // Marcar la nueva habitación como no disponible
+        }
+
+        // Guardar la reserva actualizada
+        reservaRepository.save(reservaExistente);
+
+        // Retornar la reserva actualizada como DTO
+        return new ReservaDTO(
+                reservaExistente.getId(),
+                reservaExistente.getNombreCliente(),
+                reservaExistente.getHabitacion().getId());
+    }
+
 }

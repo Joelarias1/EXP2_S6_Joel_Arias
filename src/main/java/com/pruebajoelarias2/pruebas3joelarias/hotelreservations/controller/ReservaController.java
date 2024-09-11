@@ -17,16 +17,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.dto.ReservaDTO;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.service.ReservaService;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/reservas")
 public class ReservaController {
 
     @Autowired
-    private ReservaService reservaService; 
+    private ReservaService reservaService;
 
-
-    //Get
+    // Get
     @GetMapping
     public List<ReservaDTO> getAllReservas() {
         List<ReservaDTO> reservas = reservaService.getAllReservas();
@@ -39,26 +39,31 @@ public class ReservaController {
     @GetMapping("/{id}")
     public ReservaDTO getReservaById(@PathVariable Long id) {
         return reservaService.getReservaById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada"));
     }
 
-    
-    //Post
-    @PostMapping("crear")
+    // Post
+    @PostMapping("/crear")
     @ResponseStatus(HttpStatus.CREATED)
     public ReservaDTO crearReserva(@RequestBody ReservaDTO reservaDTO) {
-        return reservaService.saveReserva(reservaDTO); 
+        return reservaService.saveReserva(reservaDTO);
     }
 
-
     // Delete
-    @DeleteMapping("eliminar/{id}")
+    @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> deleteReserva(@PathVariable Long id) {
         if (!reservaService.getReservaById(id).isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada para eliminar");
         }
-        
+
         reservaService.deleteReserva(id);
         return ResponseEntity.ok("Reserva eliminada correctamente");
+    }
+
+    // Put 
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<ReservaDTO> updateReserva(@PathVariable Long id, @RequestBody ReservaDTO reservaDTO) {
+        ReservaDTO reservaActualizada = reservaService.updateReserva(id, reservaDTO);
+        return ResponseEntity.ok(reservaActualizada); 
     }
 }

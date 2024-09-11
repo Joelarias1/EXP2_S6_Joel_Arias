@@ -10,4 +10,5 @@ public interface ReservaService {
     Optional<ReservaDTO> getReservaById(Long id);
     ReservaDTO saveReserva(ReservaDTO reservaDTO);
     void deleteReserva(Long id);
+    public ReservaDTO updateReserva(Long id, ReservaDTO reservaDTO);
 }
