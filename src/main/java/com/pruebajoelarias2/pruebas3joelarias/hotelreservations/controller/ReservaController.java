@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +29,17 @@ public class ReservaController {
     //Get
     @GetMapping
     public List<ReservaDTO> getAllReservas() {
-        return reservaService.getAllReservas();
+        List<ReservaDTO> reservas = reservaService.getAllReservas();
+        if (reservas.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron reservas");
+        }
+        return reservas;
     }
 
     @GetMapping("/{id}")
     public ReservaDTO getReservaById(@PathVariable Long id) {
         return reservaService.getReservaById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada"));
     }
 
     
@@ -43,6 +49,16 @@ public class ReservaController {
     public ReservaDTO crearReserva(@RequestBody ReservaDTO reservaDTO) {
         return reservaService.saveReserva(reservaDTO); 
     }
-    
 
+
+    // Delete
+    @DeleteMapping("eliminar/{id}")
+    public ResponseEntity<String> deleteReserva(@PathVariable Long id) {
+        if (!reservaService.getReservaById(id).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada para eliminar");
+        }
+        
+        reservaService.deleteReserva(id);
+        return ResponseEntity.ok("Reserva eliminada correctamente");
+    }
 }
