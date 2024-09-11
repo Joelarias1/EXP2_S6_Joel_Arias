@@ -86,7 +86,7 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public void deleteReserva(Long id) {
         if (!reservaRepository.existsById(id)) {
-            throw new EntityNotFoundException("Reserva no encontrada");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada");
         }
         reservaRepository.deleteById(id);
     }
