@@ -17,31 +17,5 @@ public class OrdenController {
 
     private List<Orden> ordenes = new ArrayList<>();
 
-    
-    // Método GET para obtener todas las órdenes
-    @GetMapping
-    public List<Orden> getAllOrdenes() {
-        return ordenes;
-    }
 
-    // Método GET para obtener una orden por ID
-    @GetMapping("/{id}")
-    public Orden getOrdenById(@PathVariable Long id) {
-        return ordenes.stream()
-                .filter(orden -> orden.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
-
-    // Método GET para obtener órdenes por estado
-    @GetMapping("/estado/{estado}")
-    public List<Orden> getOrdenesByEstado(@PathVariable String estado) {
-        List<Orden> resultado = new ArrayList<>();
-        for (Orden orden : ordenes) {
-            if (orden.getEstado().equalsIgnoreCase(estado)) {
-                resultado.add(orden);
-            }
-        }
-        return resultado;
-    }
 }

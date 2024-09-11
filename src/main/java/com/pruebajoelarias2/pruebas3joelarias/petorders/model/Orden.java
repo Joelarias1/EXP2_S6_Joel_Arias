@@ -1,36 +1,32 @@
 package com.pruebajoelarias2.pruebas3joelarias.petorders.model;
-import java.util.List;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "ORDEN")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Orden {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ORDEN_ID")
     private Long id;
-    private String nombreCliente;
-    private List<Producto> productos;
-    private String estado; // Ej: "Pendiente", "Enviado", "Entregado"
 
-    // Constructor
-    public Orden(Long id, String nombreCliente, List<Producto> productos, String estado) {
-        this.id = id;
-        this.nombreCliente = nombreCliente;
-        this.productos = productos;
-        this.estado = estado;
-    }
+    @Column(name = "CANTIDAD", nullable = false)
+    private Integer cantidad;
 
-    // Getters
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "TOTAL", nullable = false)
+    private Double total;
 
-    public String getNombreCliente() {
-        return nombreCliente;
-    }
-
-    public List<Producto> getProductos() {
-        return productos;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
+    // (FK)
+    @ManyToOne
+    @JoinColumn(name = "PRODUCTO_ID", nullable = false)
+    private Producto producto;
 }
-
-
