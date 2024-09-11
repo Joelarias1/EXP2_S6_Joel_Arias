@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class productoDTO {
+public class ProductoDTO {
 
     private Long id;
 
