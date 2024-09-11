@@ -1,16 +1,14 @@
 package com.pruebajoelarias2.pruebas3joelarias.petorders.model;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
-@Table(name = "ORDEN")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Orden {
@@ -20,28 +18,19 @@ public class Orden {
     @Column(name = "ORDEN_ID")
     private Long id;
 
-    @Column(name = "CANTIDAD", nullable = false)
-    private Integer cantidad;
-
-    @Column(name = "TOTAL", nullable = false)
-    private Double total;
-
-    @Column(name = "FECHA", nullable = false)
-    private LocalDate fecha;
-
     @Column(name = "NOMBRE_COMPRADOR", nullable = false)
     private String nombreComprador;
 
     @Column(name = "DIRECCION", nullable = false)
     private String direccion;
 
-    // (FK)
-    @ManyToOne
-    @JoinColumn(name = "PRODUCTO_ID", nullable = false)
-    private Producto producto;
+    @Column(name = "FECHA", nullable = false)
+    private LocalDate fecha;
 
-    // ENUM para el estado orden
     @Enumerated(EnumType.STRING)
     @Column(name = "ESTADO", nullable = false)
     private EstadoOrden estado;
+
+    @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
+    private List<DetalleOrden> detalles;
 }
