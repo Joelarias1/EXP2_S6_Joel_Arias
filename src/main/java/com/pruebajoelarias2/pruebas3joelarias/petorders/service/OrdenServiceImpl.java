@@ -13,6 +13,7 @@ import com.pruebajoelarias2.pruebas3joelarias.petorders.dto.OrdenDTO;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.dto.ProductoDTO;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.repository.OrdenRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -76,5 +77,16 @@ public class OrdenServiceImpl implements OrdenService {
                     );
                 });
     }
+
+    // DELETE Order
+    @Override
+    public void deleteOrderById(Long id) {
+        if (ordenRepository.existsById(id)) {
+            ordenRepository.deleteById(id); 
+        } else {
+            throw new EntityNotFoundException("La orden con ID " + id + " no fue encontrada.");
+        }
+    }
+
     
 }

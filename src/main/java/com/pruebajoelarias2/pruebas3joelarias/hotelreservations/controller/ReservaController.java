@@ -16,6 +16,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.dto.ReservaDTO;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.service.ReservaService;
+import com.pruebajoelarias2.pruebas3joelarias.petorders.service.OrdenService;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
@@ -24,6 +28,7 @@ public class ReservaController {
 
     @Autowired
     private ReservaService reservaService;
+    private OrdenService ordenService;
 
     // Get 
     @GetMapping
@@ -50,9 +55,13 @@ public class ReservaController {
     
     // Delete
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> deleteReserva(@PathVariable Long id) {
-        reservaService.deleteReserva(id);
-        return ResponseEntity.ok("Reserva eliminada correctamente"); 
+    public ResponseEntity<String> deleteOrderById(@PathVariable Long id) {
+        try {
+            ordenService.deleteOrderById(id);  // Llamar al servicio para eliminar la orden
+            return ResponseEntity.ok("Orden eliminada correctamente");  // Devolver un mensaje de confirmación
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(404).body("Orden no encontrada");  // Si no se encuentra, devolver 404 con mensaje
+        }
     }
       
     // Put 

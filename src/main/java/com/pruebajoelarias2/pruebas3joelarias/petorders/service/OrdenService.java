@@ -8,5 +8,6 @@ import com.pruebajoelarias2.pruebas3joelarias.petorders.dto.OrdenDTO;
 public interface OrdenService {
     Optional<OrdenDTO> getOrderById(Long id);
     List<OrdenDTO> getAllOrders();
+    void deleteOrderById(Long id);
 }
 
