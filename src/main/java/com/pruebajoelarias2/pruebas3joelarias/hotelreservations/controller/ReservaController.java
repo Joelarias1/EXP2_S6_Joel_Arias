@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,11 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.dto.ReservaDTO;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.service.ReservaService;
-import com.pruebajoelarias2.pruebas3joelarias.petorders.service.OrdenService;
 
 import jakarta.persistence.EntityNotFoundException;
-
-import org.springframework.web.bind.annotation.PutMapping;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/reservas")
@@ -28,17 +27,15 @@ public class ReservaController {
 
     @Autowired
     private ReservaService reservaService;
-    private OrdenService ordenService;
 
-    // Get 
+    // GET All Reservas
     @GetMapping
     public ResponseEntity<List<ReservaDTO>> getAllReservas() {
         List<ReservaDTO> reservas = reservaService.getAllReservas();
         return ResponseEntity.ok(reservas);
     }
     
-    
-    //Get
+    // GET Reserva by ID
     @GetMapping("/{id}")
     public ResponseEntity<ReservaDTO> getReservaById(@PathVariable Long id) {
         ReservaDTO reserva = reservaService.getReservaById(id)
@@ -46,28 +43,28 @@ public class ReservaController {
         return ResponseEntity.ok(reserva);
     }
     
-    // Post
+    // POST Crear Reserva
     @PostMapping("/crear")
-    public ResponseEntity<ReservaDTO> crearReserva(@RequestBody ReservaDTO reservaDTO) {
+    public ResponseEntity<ReservaDTO> crearReserva(@Valid @RequestBody ReservaDTO reservaDTO) {
         ReservaDTO nuevaReserva = reservaService.saveReserva(reservaDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaReserva);
     }
     
-    // Delete
+    // DELETE Reserva
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> deleteOrderById(@PathVariable Long id) {
+    public ResponseEntity<String> deleteReservaById(@PathVariable Long id) {
         try {
-            ordenService.deleteOrderById(id);  // Llamar al servicio para eliminar la orden
-            return ResponseEntity.ok("Orden eliminada correctamente");  // Devolver un mensaje de confirmación
+            reservaService.deleteReserva(id);  // Llamar al servicio para eliminar la reserva
+            return ResponseEntity.ok("Reserva eliminada correctamente");
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).body("Orden no encontrada");  // Si no se encuentra, devolver 404 con mensaje
+            return ResponseEntity.status(404).body("Reserva no encontrada");
         }
     }
-      
-    // Put 
+
+    // PUT Actualizar Reserva
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<ReservaDTO> updateReserva(@PathVariable Long id, @RequestBody ReservaDTO reservaDTO) {
+    public ResponseEntity<ReservaDTO> updateReserva(@PathVariable Long id, @Valid @RequestBody ReservaDTO reservaDTO) {
         ReservaDTO reservaActualizada = reservaService.updateReserva(id, reservaDTO);
-        return ResponseEntity.ok(reservaActualizada); 
+        return ResponseEntity.ok(reservaActualizada);
     }
 }
