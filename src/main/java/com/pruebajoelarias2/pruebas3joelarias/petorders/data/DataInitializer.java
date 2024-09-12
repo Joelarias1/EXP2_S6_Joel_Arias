@@ -41,12 +41,11 @@
 
 //         // Guardar los productos en la base de datos
 //         productoRepository.saveAll(productos);
-
+ 
 //         // Fechas basadas en la fecha actual (hace 2 o 3 días)
 //         LocalDate fecha1 = LocalDate.now().minusDays(2);
 //         LocalDate fecha2 = LocalDate.now().minusDays(3);
 
-//         // Crear órdenes con nombres de calles relacionadas a Chile
 //         // Orden 1
 //         Orden orden1 = new Orden(null, "Juan Pérez", "Avenida Apoquindo 1234", fecha1, EstadoOrden.CREADA, new ArrayList<>());
 //         orden1.getDetalles().add(new DetalleOrden(null, orden1, productos.get(0), 2, productos.get(0).getPrecio() * 2));
