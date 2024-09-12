@@ -10,5 +10,6 @@ public interface OrdenService {
     List<OrdenDTO> getAllOrders();
     void deleteOrderById(Long id);
     OrdenDTO createOrder(OrdenDTO ordenDTO);
+    OrdenDTO updateOrder(Long id, OrdenDTO ordenDTO);
 }
 

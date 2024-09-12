@@ -31,6 +31,30 @@ public class OrdenServiceImpl implements OrdenService {
     @Autowired
     private ProductoRepository productoRepository;
 
+    // UTILS
+    // Método para convertir Orden a OrdenDTO
+    private OrdenDTO convertirAOrdenDTO(Orden orden) {
+        List<DetalleOrdenDTO> detallesDTO = orden.getDetalles().stream()
+        .map(detalle -> new DetalleOrdenDTO(
+            detalle.getId(),
+                    new ProductoDTO(
+                        detalle.getProducto().getId(),
+                        detalle.getProducto().getNombre(),
+                        detalle.getProducto().getPrecio()),
+                    detalle.getCantidad(),
+                    detalle.getSubtotal()))
+                .collect(Collectors.toList());
+    
+            return new OrdenDTO(
+                orden.getId(),
+                orden.getNombreComprador(),
+                orden.getDireccion(),
+                orden.getFecha(),
+                orden.getEstado(),
+                detallesDTO
+            );
+        }
+
     // GET all orders
     @Override
     @Transactional
@@ -87,7 +111,7 @@ public class OrdenServiceImpl implements OrdenService {
                 });
     }
 
-    // DELETE Order
+    // DELETE Orden
     @Override
     public void deleteOrderById(Long id) {
         if (ordenRepository.existsById(id)) {
@@ -97,10 +121,8 @@ public class OrdenServiceImpl implements OrdenService {
         }
     }
 
-
     // CREATE Orden
-
-        @Override
+    @Override
     public OrdenDTO createOrder(OrdenDTO ordenDTO) {
         // Crear una nueva instancia de Orden
         Orden nuevaOrden = new Orden();
@@ -131,29 +153,39 @@ public class OrdenServiceImpl implements OrdenService {
         // Convertir la entidad Orden a OrdenDTO y devolverla
         return convertirAOrdenDTO(ordenGuardada);
     }
-
-    // Método para convertir Orden a OrdenDTO
-    private OrdenDTO convertirAOrdenDTO(Orden orden) {
-        List<DetalleOrdenDTO> detallesDTO = orden.getDetalles().stream()
-            .map(detalle -> new DetalleOrdenDTO(
-                detalle.getId(),
-                new ProductoDTO(
-                    detalle.getProducto().getId(),
-                    detalle.getProducto().getNombre(),
-                    detalle.getProducto().getPrecio()),
-                detalle.getCantidad(),
-                detalle.getSubtotal()))
-            .collect(Collectors.toList());
-
-        return new OrdenDTO(
-            orden.getId(),
-            orden.getNombreComprador(),
-            orden.getDireccion(),
-            orden.getFecha(),
-            orden.getEstado(),
-            detallesDTO
-        );
-    }
-
     
+    // UPDATE Orden
+    public OrdenDTO updateOrder(Long id, OrdenDTO ordenDTO) {
+        // Buscar la orden 
+        Orden ordenExistente = ordenRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orden con ID " + id + " no fue encontrada"));
+
+        // Actualizar los campos 
+        ordenExistente.setNombreComprador(ordenDTO.getNombreComprador());
+        ordenExistente.setDireccion(ordenDTO.getDireccion());
+        ordenExistente.setFecha(ordenDTO.getFecha());
+        ordenExistente.setEstado(ordenDTO.getEstado());
+
+        // Actualizar los detalles 
+        List<DetalleOrden> detallesActualizados = ordenDTO.getDetalles().stream().map(detalleDTO -> {
+            Producto producto = productoRepository.findById(detalleDTO.getProducto().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+
+            DetalleOrden detalleOrden = new DetalleOrden();
+            detalleOrden.setProducto(producto);
+            detalleOrden.setCantidad(detalleDTO.getCantidad());
+            detalleOrden.setSubtotal(detalleDTO.getSubtotal());
+            detalleOrden.setOrden(ordenExistente);
+
+            return detalleOrden;
+        }).collect(Collectors.toList());
+
+        ordenExistente.setDetalles(detallesActualizados);
+
+        // Guardar la orden actualizada
+        Orden ordenGuardada = ordenRepository.save(ordenExistente);
+
+        // Devolver la orden actualizada como DTO
+        return convertirAOrdenDTO(ordenGuardada);
+    }
 }
