@@ -9,5 +9,6 @@ public interface OrdenService {
     Optional<OrdenDTO> getOrderById(Long id);
     List<OrdenDTO> getAllOrders();
     void deleteOrderById(Long id);
+    OrdenDTO createOrder(OrdenDTO ordenDTO);
 }
 
