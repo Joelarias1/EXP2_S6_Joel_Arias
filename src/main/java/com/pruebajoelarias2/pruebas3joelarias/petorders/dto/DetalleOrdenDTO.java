@@ -1,8 +1,10 @@
-package com.pruebajoelarias2.pruebas3joelarias.petorders.dto;
+package com.pruebajoelarias2.pruebas3joelarias.petorders.data;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+
+import com.pruebajoelarias2.pruebas3joelarias.petorders.dto.ProductoDTO;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

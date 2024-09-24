@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.pruebajoelarias2.pruebas3joelarias.petorders.data.DetalleOrdenDTO;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.model.EstadoOrden;
 
 @Getter
