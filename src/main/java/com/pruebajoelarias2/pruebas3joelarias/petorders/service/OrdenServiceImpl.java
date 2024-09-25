@@ -58,56 +58,18 @@ public class OrdenServiceImpl implements OrdenService {
     @Override
     @Transactional
     public List<OrdenDTO> getAllOrders() {
-        return ordenRepository.findAll().stream()
-            .map(orden -> {
-                List<DetalleOrdenDTO> detallesDTO = orden.getDetalles().stream()
-                    .map(detalle -> new DetalleOrdenDTO(
-                        detalle.getId(),
-                        new ProductoDTO(
-                            detalle.getProducto().getId(),
-                            detalle.getProducto().getNombre(),
-                            detalle.getProducto().getPrecio()),
-                        detalle.getCantidad(),
-                        detalle.getSubtotal()))
-                    .collect(Collectors.toList());
-
-                return new OrdenDTO(
-                    orden.getId(),
-                    orden.getNombreComprador(),
-                    orden.getDireccion(),
-                    orden.getFecha(),
-                    orden.getEstado(),
-                    detallesDTO);
-            })
+        return ordenRepository.findAll()
+            .stream()
+            .map(this::convertirAOrdenDTO) 
             .collect(Collectors.toList());
     }
-
+    
     // GET By ID
     @Override
     @Transactional
     public Optional<OrdenDTO> getOrderById(Long id) {
         return ordenRepository.findById(id)
-                .map(orden -> {
-                    var detallesDTO = orden.getDetalles().stream()
-                            .map(detalle -> new DetalleOrdenDTO(
-                                    detalle.getId(),
-                                    new ProductoDTO(
-                                        detalle.getProducto().getId(),
-                                        detalle.getProducto().getNombre(),
-                                        detalle.getProducto().getPrecio()),
-                                    detalle.getCantidad(),
-                                    detalle.getSubtotal()))
-                            .collect(Collectors.toList());
-
-                    return new OrdenDTO(
-                            orden.getId(),
-                            orden.getNombreComprador(),
-                            orden.getDireccion(),
-                            orden.getFecha(),
-                            orden.getEstado(),
-                            detallesDTO
-                    );
-                });
+                .map(this::convertirAOrdenDTO); 
     }
 
     // DELETE Orden
@@ -154,6 +116,7 @@ public class OrdenServiceImpl implements OrdenService {
     }
     
     // UPDATE Orden
+    @Override
     public OrdenDTO updateOrder(Long id, OrdenDTO ordenDTO) {
         // Buscar la orden 
         Orden ordenExistente = ordenRepository.findById(id)
