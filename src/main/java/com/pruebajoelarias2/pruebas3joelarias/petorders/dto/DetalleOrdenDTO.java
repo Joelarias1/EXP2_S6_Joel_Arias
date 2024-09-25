@@ -1,4 +1,4 @@
-package com.pruebajoelarias2.pruebas3joelarias.petorders.data;
+package com.pruebajoelarias2.pruebas3joelarias.petorders.dto;
 
 import lombok.Getter;
 import lombok.Setter;

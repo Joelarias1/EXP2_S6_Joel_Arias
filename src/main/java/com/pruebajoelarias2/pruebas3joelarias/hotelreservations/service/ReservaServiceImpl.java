@@ -16,6 +16,7 @@ import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.repository.Habit
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.repository.ReservaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ReservaServiceImpl implements ReservaService {
@@ -83,14 +84,24 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     // DELETE
+    @Transactional
     @Override
     public void deleteReserva(Long id) {
-        if (!reservaRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada");
-        }
+        // Verificar si la reserva existe
+        Reserva reserva = reservaRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva no encontrada"));
+    
+        // Obtener la habitación asociada a la reserva
+        Habitacion habitacion = reserva.getHabitacion();
+    
+        // Marcar la habitación como disponible
+        habitacion.setDisponible(true);
+        habitacionRepository.save(habitacion);
+    
+        // Eliminar la reserva
         reservaRepository.deleteById(id);
     }
-
+    
     // PUT
     @Override
     public ReservaDTO updateReserva(Long id, ReservaDTO reservaDTO) {

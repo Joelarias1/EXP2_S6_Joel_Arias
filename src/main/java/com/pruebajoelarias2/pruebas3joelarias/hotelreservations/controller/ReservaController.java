@@ -52,14 +52,11 @@ public class ReservaController {
     
     // DELETE Reserva
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> deleteReservaById(@PathVariable Long id) {
-        try {
-            reservaService.deleteReserva(id);  // Llamar al servicio para eliminar la reserva
-            return ResponseEntity.ok("Reserva eliminada correctamente");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(404).body("Reserva no encontrada");
-        }
+    public ResponseEntity<String> deleteReserva(@PathVariable Long id) {
+        reservaService.deleteReserva(id);
+        return ResponseEntity.ok("Reserva eliminada correctamente y la habitación ahora está disponible");
     }
+    
 
     // PUT Actualizar Reserva
     @PutMapping("/actualizar/{id}")
