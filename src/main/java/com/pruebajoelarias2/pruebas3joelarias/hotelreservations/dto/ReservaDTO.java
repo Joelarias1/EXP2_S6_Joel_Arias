@@ -1,5 +1,7 @@
 package com.pruebajoelarias2.pruebas3joelarias.hotelreservations.dto;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -11,7 +13,7 @@ import lombok.AllArgsConstructor;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservaDTO {
+public class ReservaDTO extends RepresentationModel<ReservaDTO>{
     private Long id;
 
     @NotNull(message = "El nombre del cliente es obligatorio")

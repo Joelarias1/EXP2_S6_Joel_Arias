@@ -18,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.dto.ReservaDTO;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.service.ReservaService;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
