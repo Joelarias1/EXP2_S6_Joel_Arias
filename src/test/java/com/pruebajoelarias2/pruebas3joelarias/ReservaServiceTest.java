@@ -52,50 +52,60 @@ public class ReservaServiceTest {
         habitacion.setPrecioPorNoche(100.0);
         habitacion.setDisponible(true);
         reservaInexistente = 100L;
-
+        System.out.println("Inicialización de pruebas completada.");
     }
 
     @Test
     public void deberiaMarcarHabitacionComoNoDisponibleAlCrearReserva() {
+        System.out.println("Iniciando prueba de crear reserva...");
+
         // Datos de prueba
         ReservaDTO reservaDTO = new ReservaDTO();
         reservaDTO.setNombreCliente("Juan Perez");
         reservaDTO.setHabitacionId(1L);
-    
+        System.out.println("Datos de prueba creados: " + reservaDTO);
+
         // Simular comportamiento del repositorio de habitaciones
         when(habitacionRepository.findById(1L)).thenReturn(Optional.of(habitacion));
-    
+        System.out.println("Simulando repositorio de habitaciones...");
+
         // Crear una reserva para simular la respuesta de save
         Reserva reservaGuardada = new Reserva(1L, "Juan Perez", habitacion);
         when(reservaRepository.save(any(Reserva.class))).thenReturn(reservaGuardada);
-    
+        System.out.println("Llamando a saveReserva...");
+
         // Ejecutar método del servicio sin almacenar el resultado
         reservaService.saveReserva(reservaDTO);
-    
+        System.out.println("Reserva creada y habitación marcada como no disponible.");
+
         // Verificar que la habitación se marcó como no disponible
         assertFalse(habitacion.isDisponible(), "La habitación debería estar marcada como no disponible");
-    
+        System.out.println("La habitación se ha marcado como no disponible.");
+
         // Verificar que el método save de reservaRepository fue llamado
         verify(reservaRepository, times(1)).save(any(Reserva.class));
         verify(habitacionRepository, times(1)).save(habitacion);
+        System.out.println("Verificación de llamada a save realizada correctamente.");
     }
-
 
     @Test
     public void deberiaLanzarExceptionAlIntentarEliminarReservaInexistente() {
+        System.out.println("Iniciando prueba de eliminar reserva inexistente...");
 
         // Simular que la reserva no existe en el repositorio
         when(reservaRepository.findById(reservaInexistente)).thenReturn(Optional.empty());
+        System.out.println("Simulando repositorio de reservas para un ID inexistente.");
 
         // Verificar que se lanza una ResponseStatusException al intentar eliminar la reserva
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             reservaService.deleteReserva(reservaInexistente);
         });
+        System.out.println("Exception lanzada al intentar eliminar una reserva inexistente.");
 
         // Verificar que la excepción tiene el estado NOT_FOUND
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode(), "Debería lanzar NOT_FOUND");
+        System.out.println("La excepción tiene el estado esperado: NOT_FOUND.");
     }
-    
 
 
 }
