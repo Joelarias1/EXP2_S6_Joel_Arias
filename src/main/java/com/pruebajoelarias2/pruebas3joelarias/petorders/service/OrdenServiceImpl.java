@@ -72,13 +72,13 @@ public class OrdenServiceImpl implements OrdenService {
                 .map(this::convertirAOrdenDTO); 
     }
 
-    // DELETE Orden
+    // DELETE Orden v2
     @Override
     public void deleteOrderById(Long id) {
         if (ordenRepository.existsById(id)) {
             ordenRepository.deleteById(id); 
         } else {
-            throw new EntityNotFoundException("La orden con ID " + id + " no fue encontrada.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Orden no encontrada");
         }
     }
 
