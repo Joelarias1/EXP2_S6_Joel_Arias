@@ -56,7 +56,6 @@ public class ReservaController {
         return ResponseEntity.ok("Reserva eliminada correctamente y la habitación ahora está disponible");
     }
     
-
     // PUT Actualizar Reserva
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ReservaDTO> updateReserva(@PathVariable Long id, @Valid @RequestBody ReservaDTO reservaDTO) {
@@ -64,3 +63,5 @@ public class ReservaController {
         return ResponseEntity.ok(reservaActualizada);
     }
 }
+
+

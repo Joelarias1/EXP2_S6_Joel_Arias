@@ -1,6 +1,7 @@
 package com.pruebajoelarias2.pruebas3joelarias.hotelreservations.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilderFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.controller.ReservaController;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.dto.ReservaDTO;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.model.Habitacion;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.model.Reserva;
@@ -17,6 +19,10 @@ import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.repository.Reser
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 
 @Service
 public class ReservaServiceImpl implements ReservaService {
@@ -29,10 +35,23 @@ public class ReservaServiceImpl implements ReservaService {
 
     // Utils
     private ReservaDTO convertToDTO(Reserva reserva) {
-        return new ReservaDTO(reserva.getId(), reserva.getNombreCliente(), reserva.getHabitacion().getId());
+        ReservaDTO reservaDTO = new ReservaDTO(
+            reserva.getId(),
+            reserva.getNombreCliente(),
+            reserva.getHabitacion().getId()
+        );
+    
+        // Añadir enlace 'self'
+        reservaDTO.add(linkTo(methodOn(ReservaController.class).getReservaById(reserva.getId())).withSelfRel());
+        
+        // Añadir enlace para actualizar la reserva
+        reservaDTO.add(linkTo(methodOn(ReservaController.class).updateReserva(reserva.getId(), null)).withRel("update"));
+        
+        // Añadir enlace para eliminar la reserva
+        reservaDTO.add(linkTo(methodOn(ReservaController.class).deleteReserva(reserva.getId())).withRel("delete"));
+    
+        return reservaDTO;
     }
-
-
 
     // GET ALL RESERVAS
     @Override
