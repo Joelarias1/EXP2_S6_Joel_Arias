@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,7 +25,6 @@ import com.pruebajoelarias2.pruebas3joelarias.petorders.repository.OrdenReposito
 import com.pruebajoelarias2.pruebas3joelarias.petorders.repository.ProductoRepository;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.service.OrdenServiceImpl;
 
-import jakarta.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
