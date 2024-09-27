@@ -9,13 +9,15 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.pruebajoelarias2.pruebas3joelarias.petorders.model.EstadoOrden;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrdenDTO {
+public class OrdenDTO extends RepresentationModel<OrdenDTO>{
 
     private Long id;
 

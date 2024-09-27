@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Optional;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import com.pruebajoelarias2.pruebas3joelarias.petorders.controller.OrdenController;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.dto.DetalleOrdenDTO;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.dto.OrdenDTO;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.dto.ProductoDTO;
@@ -18,7 +22,6 @@ import com.pruebajoelarias2.pruebas3joelarias.petorders.model.Producto;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.repository.OrdenRepository;
 import com.pruebajoelarias2.pruebas3joelarias.petorders.repository.ProductoRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -33,26 +36,36 @@ public class OrdenServiceImpl implements OrdenService {
     // UTILS
     // Método para convertir Orden a OrdenDTO
     private OrdenDTO convertirAOrdenDTO(Orden orden) {
-        List<DetalleOrdenDTO> detallesDTO = orden.getDetalles().stream()
-        .map(detalle -> new DetalleOrdenDTO(
-            detalle.getId(),
-                    new ProductoDTO(
-                        detalle.getProducto().getId(),
-                        detalle.getProducto().getNombre(),
-                        detalle.getProducto().getPrecio()),
-                    detalle.getCantidad(),
-                    detalle.getSubtotal()))
-                .collect(Collectors.toList());
-    
-            return new OrdenDTO(
+        OrdenDTO ordenDTO = new OrdenDTO(
                 orden.getId(),
                 orden.getNombreComprador(),
                 orden.getDireccion(),
                 orden.getFecha(),
                 orden.getEstado(),
-                detallesDTO
-            );
-        }
+                orden.getDetalles().stream()
+                    .map(detalle -> new DetalleOrdenDTO(
+                            detalle.getId(),
+                            new ProductoDTO(
+                                    detalle.getProducto().getId(),
+                                    detalle.getProducto().getNombre(),
+                                    detalle.getProducto().getPrecio()
+                            ),
+                            detalle.getCantidad(),
+                            detalle.getSubtotal()))
+                    .collect(Collectors.toList())
+        );
+
+        // Agregar enlace a sí mismo
+        ordenDTO.add(linkTo(methodOn(OrdenController.class).getOrderById(ordenDTO.getId())).withSelfRel());
+
+        // Agregar enlace para actualizar
+        ordenDTO.add(linkTo(methodOn(OrdenController.class).actualizarOrden(ordenDTO.getId(), ordenDTO)).withRel("update"));
+
+        // Agregar enlace para eliminar
+        ordenDTO.add(linkTo(methodOn(OrdenController.class).deleteOrderById(ordenDTO.getId())).withRel("delete"));
+
+        return ordenDTO;
+    }
 
     // GET all orders
     @Override
