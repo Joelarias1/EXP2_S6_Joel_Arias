@@ -1,4 +1,3 @@
-version: '1'
 services:
   microservicio:
     build:
@@ -8,7 +7,7 @@ services:
       - "8080:8080"
     environment:
       - spring.datasource.url=jdbc:oracle:thin:@bdfullstack1_high?TNS_ADMIN=/app/oracle_wallet/
-      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_USERNAME=ADMIN
       - SPRING_DATASOURCE_PASSWORD=Oracle12345!
       - oracle.jdbc.fanEnabled=false
     restart: always
