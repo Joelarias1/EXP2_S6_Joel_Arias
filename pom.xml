@@ -66,11 +66,9 @@
 		<!-- Librería modificada para el driver de conexión JDBC -->
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc11-production</artifactId>
+			<artifactId>ojdbc11</artifactId>
 			<version>21.5.0.0</version>
-			<type>pom</type>
 		</dependency>
-
 		<!-- Librerías nuevas para la conexión con Oracle Cloud utilizando la wallet -->
 		<dependency>
 			<groupId>com.oracle.database.security</groupId>
