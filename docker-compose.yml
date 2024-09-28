@@ -9,5 +9,5 @@ services:
       - spring.datasource.url=jdbc:oracle:thin:@bdfullstack1_high?TNS_ADMIN=/app/oracle_wallet/
       - SPRING_DATASOURCE_USERNAME=ADMIN
       - SPRING_DATASOURCE_PASSWORD=Oracle12345!
-      - oracle.jdbc.fanEnabled=false
+      - ORACLE_JDBC_FANENABLED=false
     restart: always

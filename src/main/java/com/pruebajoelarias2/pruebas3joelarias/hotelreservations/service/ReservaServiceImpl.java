@@ -16,7 +16,6 @@ import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.model.Reserva;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.repository.HabitacionRepository;
 import com.pruebajoelarias2.pruebas3joelarias.hotelreservations.repository.ReservaRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -55,15 +54,10 @@ public class ReservaServiceImpl implements ReservaService {
     // GET ALL RESERVAS
     @Override
     public List<ReservaDTO> getAllReservas() {
-        List<ReservaDTO> reservas = reservaRepository.findAll()
-        .stream()
-        .map(this::convertToDTO) 
-        .collect(Collectors.toList());
-
-        if (reservas.isEmpty()) {
-            throw new EntityNotFoundException("No se encontraron reservas.");
-        }
-        return reservas;
+        return reservaRepository.findAll()
+            .stream()
+            .map(this::convertToDTO) 
+            .collect(Collectors.toList());
     }
 
     // GET BY ID RESERVA

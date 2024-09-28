@@ -31,6 +31,6 @@ public class Orden {
     @Column(name = "ESTADO", nullable = false)
     private EstadoOrden estado;
 
-    @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<DetalleOrden> detalles;
 }
