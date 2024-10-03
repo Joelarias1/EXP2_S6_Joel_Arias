@@ -70,6 +70,12 @@ public class ReservaServiceImpl implements ReservaService {
     // POST
     @Override
     public ReservaDTO saveReserva(ReservaDTO reservaDTO) {
+        // Validar el nombre del cliente antes de continuar
+        if (reservaDTO.getNombreCliente() == null || reservaDTO.getNombreCliente().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre del cliente es obligatorio.");
+        }
+    
+        // Buscar la habitación y validar si existe
         Habitacion habitacion = habitacionRepository.findById(reservaDTO.getHabitacionId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Habitación no encontrada"));
     
