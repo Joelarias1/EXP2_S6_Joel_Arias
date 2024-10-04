@@ -33,23 +33,34 @@ public class ReservaServiceImpl implements ReservaService {
 
     // Utils
     private ReservaDTO convertToDTO(Reserva reserva) {
+        // Validar los parámetros de la reserva antes de proceder con la conversión
+        if (reserva.getNombreCliente() == null || reserva.getNombreCliente().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre del cliente es obligatorio");
+        }
+
+        if (reserva.getHabitacion() == null || reserva.getHabitacion().getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La habitación es obligatoria");
+        }
+
+        // Convertir la reserva a DTO si todos los parámetros son válidos
         ReservaDTO reservaDTO = new ReservaDTO(
             reserva.getId(),
             reserva.getNombreCliente(),
             reserva.getHabitacion().getId()
         );
-    
+
         // Añadir enlace 'self'
         reservaDTO.add(linkTo(methodOn(ReservaController.class).getReservaById(reserva.getId())).withSelfRel());
-        
+
         // Añadir enlace para actualizar la reserva
         reservaDTO.add(linkTo(methodOn(ReservaController.class).updateReserva(reserva.getId(), null)).withRel("update"));
-        
+
         // Añadir enlace para eliminar la reserva
         reservaDTO.add(linkTo(methodOn(ReservaController.class).deleteReserva(reserva.getId())).withRel("delete"));
-    
+
         return reservaDTO;
-    }
+}
+
 
     // GET ALL RESERVAS
     @Override
